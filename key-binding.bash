@@ -1,10 +1,25 @@
-bind '"\er": redraw-current-line'
+fzf-bind-helper () {
+	local line
+	local -a lines
+	while read line
+	do
+		lines+=("$line")
+	done <<< "$*"
+
+	local result="${lines[*]}"
+	READLINE_LINE="${READLINE_LINE:0:$READLINE_POINT}$result${READLINE_LINE:$READLINE_POINT}"
+	READLINE_POINT=$((READLINE_POINT + ${#result} ))
+}
 
 fzf-bind () {
 	local keyseq="$1"
 	local cmd="$2"
 
-	bind "'$keyseq': '\$($cmd)\e\C-e\er'"
+	# define custom wrapper function per key binding
+	local widget_name="$cmd-widget"
+	eval "$widget_name () { fzf-bind-helper \"\$($cmd)\"; }"
+
+	bind -x "\"$keyseq\": $widget_name"
 }
 
 fzf-bind '\C-g\C-f' fzf-gf
