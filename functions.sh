@@ -49,3 +49,9 @@ fzf-gr() {
     --preview 'git log --oneline --graph --date=short --pretty="format:%C(auto)%cd %h%d %s" {1} | head -200' |
   cut -d$'\t' -f1
 }
+
+fzf-gl() {
+  is_in_git_repo || return
+  git ls-files |
+  fzf-down --multi
+}

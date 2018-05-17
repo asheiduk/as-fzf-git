@@ -27,3 +27,4 @@ fzf-bind '\C-g\C-t' fzf-gt
 fzf-bind '\C-g\C-b' fzf-gb
 fzf-bind '\C-g\C-h' fzf-gh
 fzf-bind '\C-g\C-r' fzf-gr
+fzf-bind '\C-g\C-l' fzf-gl
