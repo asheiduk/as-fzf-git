@@ -54,3 +54,22 @@ fzf-gl() {
   git ls-files |
   fzf-down --multi
 }
+
+fzf-git-refs () {
+  is_in_git_repo || return
+  git for-each-ref --sort version:refname --format="%(objectname:short) %(align:6)%(objecttype)%(end) %(refname)" |
+  (
+    local_color=$(git config --get-color color.branch.local green)	# or color.decorate.branch
+    remote_color=$(git config --get-color color.branch.remote red)	# or color.decorate.remoteBranch
+    tag_color=$(git config --get-color color.decorate.tag yellow)
+    stash_color=$(git config --get-color color.decorate.stash magenta)
+    no_color=$(git config --get-color "" reset)
+    sed -r \
+      -e "s#( refs/heads/)(.*)#\1$local_color\2$no_color#" \
+      -e "s#( refs/remotes/)(.*)#\1$remote_color\2$no_color#" \
+      -e "s#( refs/tags/)(.*)#\1$tag_color\2$no_color#" \
+      -e "s#( refs/)(stash.*)#\1$stash_color\2$no_color#" \
+  ) |
+  fzf-down --multi --ansi --preview 'git show --color=always {1}' |
+  awk '{print $3}'
+}
