@@ -55,6 +55,12 @@ fzf-gl() {
   fzf-down --multi
 }
 
+fzf-git-list-others() {
+  is_in_git_repo || return
+  git ls-files --others |
+  fzf-down --multi
+}
+
 fzf-git-refs () {
   is_in_git_repo || return
   git for-each-ref --sort version:refname --format="%(objectname:short) %(align:6)%(objecttype)%(end) %(refname)" |
